@@ -3,7 +3,7 @@ from django.urls import path
 from .views import index, other_page, BBLoginView, profile, BBLogoutView
 from .views import ChangeUserInfoView, BBPasswordChangeView
 from .views import RegisterUserView, RegisterDoneView
-from .views import user_activate
+from .views import user_activate, DeleteUserView
 
 
 app_name = 'main'
@@ -17,6 +17,8 @@ urlpatterns = [
     path('accounts/register/', RegisterUserView.as_view(), 
         name='register'),
     path('accounts/login/', BBLoginView.as_view(), name='login'),
+    path('accounts/profile/delete/', DeleteUserView.as_view(), 
+        name='profile_delete'),
     path('accounts/profile/', profile, name='profile'),
     path('accounts/logout/', BBLogoutView.as_view(), name='logout'),
     path('accounts/profile/change', ChangeUserInfoView.as_view(), 
