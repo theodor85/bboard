@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'eyzc0i6w9ag+z9hv$9zm@t+f&0pl=40a4qhg84jgz%3@n9l4@t'
+SECRET_KEY = os.environ['DJANGO_SECRET']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -129,7 +129,7 @@ DEFAULT_FROM_EMAIL = 'qpwo@mail.ru'
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'qpwo@mail.ru'
-EMAIL_HOST_PASSWORD = 'der3299221590'
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
 EMAIL_USE_SSL = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
