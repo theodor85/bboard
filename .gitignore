@@ -1,2 +1,3 @@
 *.pyc
 main/users.txt
+media/*
