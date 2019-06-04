@@ -22,7 +22,15 @@ from .utilities import signer
 
 
 def index(request):
-    return render(request, 'main/index.html')
+    bbs = Bb.objects.filter(is_active=True)[:10]
+    paginator = Paginator(bbs, 2)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'bbs': page.object_list, 'page': page}
+    return render(request, 'main/index.html', context)
 
 
 def other_page(request, page):
