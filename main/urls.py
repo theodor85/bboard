@@ -4,7 +4,7 @@ from .views import index, other_page, BBLoginView, profile, BBLogoutView
 from .views import ChangeUserInfoView, BBPasswordChangeView
 from .views import RegisterUserView, RegisterDoneView
 from .views import user_activate, DeleteUserView, by_rubric, detail
-
+from .views import profile_bb_detail, profile_bb_add
 
 app_name = 'main'
 urlpatterns = [
@@ -21,6 +21,9 @@ urlpatterns = [
     path('accounts/login/', BBLoginView.as_view(), name='login'),
     path('accounts/profile/delete/', DeleteUserView.as_view(), 
         name='profile_delete'),
+    path('accounts/profile/add/', profile_bb_add, name='profile_bb_add'),
+    path('accounts/profile/<int:pk>/', profile_bb_detail, 
+        name='profile_bb_detail'),
     path('accounts/profile/', profile, name='profile'),
     path('accounts/logout/', BBLogoutView.as_view(), name='logout'),
     path('accounts/profile/change', ChangeUserInfoView.as_view(), 

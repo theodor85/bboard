@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
@@ -17,7 +17,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .models import AdvUser, SubRubric, Bb
-from .forms import ChangeUserInfoForm, RegisterUserForm, SearchForm
+from .forms import ChangeUserInfoForm, RegisterUserForm, SearchForm, BbForm 
+from .forms import AIFormSet
 from .utilities import signer
 
 
@@ -47,7 +48,9 @@ class BBLoginView(LoginView):
 
 @login_required
 def profile(request):
-    return render(request, 'main/profile.html')
+    bbs = Bb.objects.filter(author=request.user.pk)
+    context = {'bbs': bbs}
+    return render(request, 'main/profile.html', context)
 
 
 class BBLogoutView(LoginRequiredMixin, LogoutView):
@@ -156,3 +159,30 @@ def detail(request, rubric_pk, pk):
     additional_images = bb.additionalimage_set.all()
     context = {'bb': bb, 'ais': additional_images}
     return render(request, 'main/detail.html', context)
+
+
+@login_required
+def profile_bb_detail(request, pk):
+    bb = get_object_or_404(Bb, pk=pk)
+    additional_images = bb.additionalimage_set.all()
+    context = {'bb': bb, 'ais': additional_images}
+    return render(request, 'main/profile_bb_detail.html', context)
+
+
+@login_required
+def profile_bb_add(request):
+    if request.method == 'POST':
+        form = BbForm(request.POST, request.FILES)
+        if form.is_valid():
+            bb = form.save()
+            formset = AIFormSet(request.POST, request.FILES, instance=bb)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request, messages.SUCCESS, 
+                    'Объявление добавлено')
+                return redirect('main:profile')
+    else:
+        form = BbForm(initial={'author': request.user.pk})
+        formset = AIFormSet()
+    context = {'form': form, 'formset': formset}
+    return render(request, 'main/profile_bb_add.html', context)
