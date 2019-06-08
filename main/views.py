@@ -190,7 +190,11 @@ def profile_bb_add(request):
 
 @login_required
 def profile_bb_change(request, pk):
-    bb = get_object_or_404(Bb, pk=pk)
+    bb = get_object_or_404(Bb, pk=pk) 
+    if bb.author != request.user:
+        messages.add_message(request, messages.ERROR, 
+                    'Объявление создано другим пользователем!')
+        return redirect('main:login')
     if request.method == 'POST':
         form = BbForm(request.POST, request.FILES, instance=bb)
         if form.is_valid():
@@ -211,6 +215,10 @@ def profile_bb_change(request, pk):
 @login_required
 def profile_bb_delete(request, pk):
     bb = get_object_or_404(Bb, pk=pk)
+    if bb.author != request.user:
+        messages.add_message(request, messages.ERROR, 
+                'Объявление создано другим пользователем!')
+        return redirect('main:login')
     if request.method == 'POST':
         bb.delete()
         messages.add_message(request, messages.SUCCESS, 'Объявление удалено')
