@@ -3,7 +3,9 @@ from django.forms import inlineformset_factory
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 
-from .models import AdvUser, SuperRubric, SubRubric
+from captcha.fields import CaptchaField
+
+from .models import AdvUser, SuperRubric, SubRubric, Comment
 from .models import user_registrated, Bb, AdditionalImage
 
 
@@ -84,3 +86,19 @@ class BbForm(forms.ModelForm):
 
 
 AIFormSet = inlineformset_factory(Bb, AdditionalImage, fields='__all__')
+
+
+class UserCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        exclude = ('is_active', )
+        widgets = {'bb': forms.HiddenInput}
+
+
+class GuestCommentForm(forms.ModelForm):
+    captcha = CaptchaField(label='Введите текст с картинки',
+        error_messages={'invalid': 'Неправильный текст'})
+    class Meta:
+        model = Comment
+        exclude = ('is_active', )
+        widgets = {'bb': forms.HiddenInput}
